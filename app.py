@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
@@ -12,18 +12,9 @@ def hi():  # put application's code here
 def index():  # put application's code here
     car = {'name': ('bugatty',
 
-                        'https://libertycity.ru/uploads/download/gta5_bugatti/fulls/j4q9k776k31rt5p2jnd2823s63/15043684584016_f61541-1.jpg')}
-    return ''' <html>
-    <head>
-    <title> Самые крутые машины </title>
-    </head>
-    <body> 
-    <h1> Вот самая красивая машина ''' + car['name'][0] + ''' </h1>
-    <img src=''' + car['name'][1] + '''>
-    </body>
-    </html>
-    
-    '''
+                    'https://libertycity.ru/uploads/download/gta5_bugatti/fulls/j4q9k776k31rt5p2jnd2823s63/15043684584016_f61541-1.jpg')}
+
+    return render_template('index.html', name = car['name'][0], foto = car['name'][1])
 
 
 @app.route('/petya/')

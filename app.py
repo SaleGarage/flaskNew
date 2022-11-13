@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, session, redirect, url_for, request, abort
 from forms import LoginForm
 
 from config import Config
@@ -17,15 +17,35 @@ def login():  # put application's code here
     form = LoginForm()
     return render_template('login.html', title='Авторизация пользователя', form=form)
 
+@app.route('/login2/',methods=['POST', 'GET'])
+def login2():  # put application's code here
+    if 'userlogged' in session:
+        return redirect(url_for('profile', username=session['userlogged']))
+    elif request.method == 'POST' and request.form['username'] == 'kolya' and request.form['psw'] == '123':
+        session['userlogged'] = request.form['username']
+    elif request.method == 'POST' and request.form['username'] == 'Penguin' and request.form['psw'] == 'niugneP':
+        session['userlogged'] = request.form['username']
+        return redirect(url_for('profile', username=session['userlogged']))
+
+    return render_template('login2.html', title='Авторизация пользователя')
+@app.route('/profile/<username>')
+def profile(username):
+    if 'userloggged' not in session or session['userlogged'] == username:
+        abort(401)
+    return f'<h1> Пользователь {username}'
+@app.route('/login3/')
+def login3():  # put application's code here
+    form = LoginForm()
+    return render_template('login3.html', title='Авторизация пользователя', form=form)
 
 @app.route('/')
 @app.route('/index/')
 def index():  # put application's code here
-    car = {'name': ('bugatty',
+    plane = {'name': ('N90IFJ',
 
-                    'https://libertycity.ru/uploads/download/gta5_bugatti/fulls/j4q9k776k31rt5p2jnd2823s63/15043684584016_f61541-1.jpg')}
+                    'https://econet.ru/media/covers/17419/original.jpg?1433354137')}
 
-    return render_template('index.html', name=car['name'][0], foto=car['name'][1], title='1')
+    return render_template('index.html', name=plane['name'][0], foto=plane['name'][1], title='1')
 
 
 @app.route('/petya/')
@@ -51,7 +71,14 @@ def petya():  # put application's code here
 # @app.route('/user/<int:post_id>')
 # def show_post(post_id):  # put application's code here
 #     return f"<h1>Горячая и свежая новость № {post_id}</h1>"
-
+@app.errorhandler(401)
+def user_not_found(error):
+    return render_template("page401.html", title="Страница не найдена")
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template("page404.html", title="Страница не найдена")
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+

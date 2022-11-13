@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<form action="{{url_for('login3')}}" method="post" class="form-contact">
+    <p><Label> имя: </Label> <input type="text" name="username" value="" required</p>
+    <p><Label> название поста: </Label> <input type="text" name="psw" value="" required</p>
+    <p><Label> пост: </Label></p>
+    <p><textarea rows="99" cols="99" name="text"></textarea> </p>
+    <p><input type="submit"></p>
+
+</form>
+{% endblock %}

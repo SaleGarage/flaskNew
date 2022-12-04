@@ -1,23 +1,40 @@
-from flask import Flask, render_template, session, redirect, url_for, request, abort
+import datetime
+import os
+import sqlite3
+
+from flask import Flask, render_template, session, redirect, url_for, request, abort, g
+
+from fdatabase import FdataBase
 from forms import LoginForm
 
 from config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
+app.config.update(dict(DATABASE=os.path.join(app.root_path, 'fdb.db')))
+app.permanent_session_lifetime = datetime.timedelta(seconds=60)
 
 
-@app.route('/kuku/')
+def connect_db():
+    conn = sqlite3.connect(app.config['DATABASE'])
+    conn.row_factory = sqlite3.Row
+    return conn
+
+def get_db():
+    if not hasattr(g, 'link_db'):
+        g.link_db = connect_db()
+        return g.link_db
+@app.route('/kuku')
 def hi():  # put application's code here
     return 'sdfsdf!'
 
 
-@app.route('/login/')
+@app.route('/login')
 def login():  # put application's code here
     form = LoginForm()
     return render_template('login.html', title='Авторизация пользователя', form=form)
 
-@app.route('/login2/',methods=['POST', 'GET'])
+@app.route('/login2',methods=['POST', 'GET'])
 def login2():  # put application's code here
     if 'userlogged' in session:
         return redirect(url_for('profile', username=session['userlogged']))
@@ -33,22 +50,24 @@ def profile(username):
     if 'userloggged' not in session or session['userlogged'] == username:
         abort(401)
     return f'<h1> Пользователь {username}'
-@app.route('/login3/')
+@app.route('/login3')
 def login3():  # put application's code here
     form = LoginForm()
     return render_template('login3.html', title='Авторизация пользователя', form=form)
 
 @app.route('/')
-@app.route('/index/')
+@app.route('/index')
 def index():  # put application's code here
+    db = get_db()
+    database = FdataBase(db)
     plane = {'name': ('N90IFJ',
 
                     'https://econet.ru/media/covers/17419/original.jpg?1433354137')}
 
-    return render_template('index.html', name=plane['name'][0], foto=plane['name'][1], title='1')
+    return render_template('index.html', name=plane['name'][0], foto=plane['name'][1], title='1', menu=database.getMenu())
 
 
-@app.route('/petya/')
+@app.route('/petya')
 def petya():  # put application's code here
     return ''' <h2> Александр Твардовский
 

@@ -3,21 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta charset="UTF-8">
+    <link type="text/css" href="{{url_for('static', filename='css/style.css/style.css')}}" rel="stylesheet"/>
+
     {% if title %}
     <title>Самые крутые самолёты </title>
     {% else%}
-    <title>Добро пожаловать в мир самолётов</title>
+    <title>Добро пожаловать в мир самолётов </title>
     {% endif %}
 </head>
 <body>
 
 {% block content %}
             {%- block mainmenu -%}
-       <ul>
-           {% for m in menu -%}
-           <li><a href="{{url_for(m.url)}}"> {{m.title}}</a></li>
-       {% endfor %}
-       </ul>
+        <ul class="mainmenu">
+            {% for  m in menu -%}
+            <li><a href="{{url_for(m.url)}}"> {{m.title}}</a></li>
+        {% endfor -%}
+        </ul>
 
             {% endblock mainmenu -%}
 
@@ -25,13 +27,13 @@
 {% with messages = get_flashed_messages() %}
 {% if messages %}
 <ul>
-    {% for massages in messages  %}
-    <li>{message}        </li>
+    {% for message in messages  %}
+    <li>{{message}}     </li>
     {% endfor %}
+
 </ul>
 {% endif %}
 {% endwith %}
 {% endblock %}
 </body>
 </html>
-

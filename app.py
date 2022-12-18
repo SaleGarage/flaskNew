@@ -19,11 +19,16 @@ def connect_db():
     conn = sqlite3.connect(app.config['DATABASE'])
     conn.row_factory = sqlite3.Row
     return conn
-
 def get_db():
-    if not hasattr(g, 'link_db'):
+    if not  hasattr(g, 'link_db'):
         g.link_db = connect_db()
         return g.link_db
+
+@app.teardown_appcontext
+def close_db(error):
+    if hasattr(g, 'link_db'):
+        g.link_db.close()
+
 @app.route('/kuku')
 def hi():  # put application's code here
     return 'sdfsdf!'
@@ -54,6 +59,11 @@ def profile(username):
 def login3():  # put application's code here
     form = LoginForm()
     return render_template('login3.html', title='Авторизация пользователя', form=form)
+
+@app.route('/post')
+def post():  # put application's code here
+    form = LoginForm()
+    return render_template('post.html', title='Авторизация пользователя', form=form)
 
 @app.route('/')
 @app.route('/index')

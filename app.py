@@ -2,7 +2,7 @@ import datetime
 import os
 import sqlite3
 
-from flask import Flask, render_template, session, redirect, url_for, request, abort, g
+from flask import Flask, render_template, session, redirect, url_for, request, abort, g, flash
 
 from fdatabase import FdataBase
 from forms import LoginForm
@@ -60,10 +60,7 @@ def login3():  # put application's code here
     form = LoginForm()
     return render_template('login3.html', title='Авторизация пользователя', form=form)
 
-@app.route('/post')
-def post():  # put application's code here
-    form = LoginForm()
-    return render_template('post.html', title='Авторизация пользователя', form=form)
+
 
 @app.route('/')
 @app.route('/index')
@@ -75,6 +72,38 @@ def index():  # put application's code here
                     'https://econet.ru/media/covers/17419/original.jpg?1433354137')}
 
     return render_template('index.html', name=plane['name'][0], foto=plane['name'][1], title='1', menu=database.getMenu())
+
+@app.route('/post', methods=['POST', 'GET'])
+def post():
+    db = get_db()
+    database = FdataBase(db)
+    if request.method == 'POST':
+        if len(request.form['name']) > 3 and len(request.form['post']) > 10:
+            res = database.addPost(request.form['name'], request.form['post'])
+            if not res:
+                flash('Ошибка добавления статьи', category='error')
+            else:
+                flash('Статья добавлена успешно', category='success')
+        else:
+            flash('Ошибка добавления статьи', category='error')
+
+    return render_template('post.html', title='Добавить статью', menu=database.getMenu())
+
+@app.route('/allposts')
+def allpost():
+    db = get_db()
+    database = FdataBase(db)
+    return render_template('allpost.html', title='Список постов', menu=database.getMenu(),
+                           posts=database.getPostAnnoce())
+
+@app.route('/post/<int:id_post>')
+def showPost(id_post):
+    db = get_db()
+    database = FdataBase(db)
+    title, post = database.getPost(id_post)
+    if not title:
+        abort(404)
+    return render_template('aticle.html', title='title', menu=database.getMenu(), post=post)
 
 
 @app.route('/petya')

@@ -56,6 +56,26 @@ class FdataBase:
             return False
         return True
 
+
+
+    def getPostAnnoce(self):
+        try:
+            self.__cur.execute(f"SELECT id, title, text FROM posts ORDER BY time DESC")
+            res = self.__cur.fetchall()
+            if res: return res
+        except sqlite3.Error as e:
+            print("Ошибка получения статей из БД"+ str(e))
+        return []
+
+    def getPost(self, postid):
+        try:
+            self.__cur.execute(f"SELECT title, text FROM posts                                               WHERE id = {postid} LIMIT 1")
+            res = self.__cur.fetchone()
+            if res: return res
+        except sqlite3.Error as e:
+            print("Ошибка получения статей из БД"+ str(e))
+        return (False, False)
+
 if __name__ == '__main__':
     from app import connect_db, app
     print(create_db.__doc__)
@@ -68,6 +88,5 @@ if __name__ == '__main__':
     #print(db.addMenu('Индекс', 'index'))
     #print(db.addMenu('Авторизация1', 'login'))
     #print(db.addMenu('Авторизация2', 'login2'))
-    #print(db.delMenu())
-
-    print(db.addPost('Пост', 'post'))
+    #print(db.addMenu('Пост', 'post'))
+    # print(db.delMenu())

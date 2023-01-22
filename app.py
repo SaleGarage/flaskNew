@@ -1,8 +1,10 @@
 import datetime
 import os
 import sqlite3
+from crypt import methods
 
 from flask import Flask, render_template, session, redirect, url_for, request, abort, g, flash
+
 
 from fdatabase import FdataBase
 from forms import LoginForm
@@ -14,7 +16,15 @@ app.config.from_object(Config)
 app.config.update(dict(DATABASE=os.path.join(app.root_path, 'fdb.db')))
 app.permanent_session_lifetime = datetime.timedelta(seconds=60)
 
-
+@app.route('/update_server', methods=['POST', 'GET'])
+def webhook():
+    if request.method == 'POST':
+        repo = git.Repo('/home/Sa1eGarage/flaskNew')
+        origin = repo.remotes.origin
+        origin.pull()
+        return 'Сайт обновился', 200
+    else:
+        return 'Возникла ошибка', 400
 def connect_db():
     conn = sqlite3.connect(app.config['DATABASE'])
     conn.row_factory = sqlite3.Row

@@ -51,8 +51,16 @@ def login():  # put application's code here
 
 @app.route('/login4')
 def login4():  # put application's code here
-    form = LoginForm()
-    return render_template('login.html', title='Авторизация пользователя', form=form)
+    if 'userlogged' in session:
+        return redirect(url_for('profile', username=session['userlogged']))
+    elif request.method == 'POST' and request.form['username'] == 'kolya' and request.form['psw'] == '123':
+        session['userlogged'] = request.form['username']
+    elif request.method == 'POST' and request.form['username'] == 'Penguin' and request.form['psw'] == 'niugneP':
+        session['userlogged'] = request.form['username']
+        return redirect(url_for('profile', username=session['userlogged']))
+
+    return render_template('login2.html', title='Авторизация пользователя')
+
 
 @app.route('/login2',methods=['POST', 'GET'])
 def login2():  # put application's code here

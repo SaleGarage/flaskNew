@@ -49,6 +49,11 @@ def login():  # put application's code here
     form = LoginForm()
     return render_template('login.html', title='Авторизация пользователя', form=form)
 
+@app.route('/login4')
+def login4():  # put application's code here
+    form = LoginForm()
+    return render_template('login.html', title='Авторизация пользователя', form=form)
+
 @app.route('/login2',methods=['POST', 'GET'])
 def login2():  # put application's code here
     if 'userlogged' in session:

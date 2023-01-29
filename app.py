@@ -49,8 +49,8 @@ def login():  # put application's code here
     form = LoginForm()
     return render_template('login.html', title='Авторизация пользователя', form=form)
 
-@app.route('/login5')
-def login5():  # put application's code here
+@app.route('/login4')
+def login4():  # put application's code here
     if 'userlogged' in session:
         return redirect(url_for('profile', username=session['userlogged']))
     elif request.method == 'POST' and request.form['username'] == 'kolya' and request.form['psw'] == '123':

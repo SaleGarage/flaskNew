@@ -49,8 +49,8 @@ def login():  # put application's code here
     form = LoginForm()
     return render_template('login.html', title='Авторизация пользователя', form=form)
 
-@app.route('/login4')
-def login4():  # put application's code here
+@app.route('/login5')
+def login5():  # put application's code here
     form = LoginForm()
     return render_template('login.html', title='Авторизация пользователя', form=form)
 
